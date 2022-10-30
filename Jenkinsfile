@@ -40,8 +40,8 @@ pipeline {
 
         stage('Deploy BackHouse') {
             steps {
-                sh 'kubectl apply -f ./Deployment/service.yaml'
-                sh 'kubectl apply -f ./Deployment/deploy.yaml'
+                sh 'kubectl apply -f Deployment/service.yaml'
+                sh 'kubectl apply -f Deployment/service.yaml'
             }
         
             // post {
