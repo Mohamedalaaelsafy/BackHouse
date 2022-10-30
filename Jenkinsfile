@@ -12,7 +12,6 @@ pipeline {
                     if (env.BRANCH_NAME == 'master') {
                         sh "docker login -u $dockerhub_USR -p $dockerhub_PSW"
                         sh "docker build -t back_house:v1 ."
-                        sh 'docker build -t .'
                         sh 'docker tag back_house:v1 mohamedalaaelsafy/app:v1'
                         sh 'docker push mohamedalaaelsafy/app:v1'
                 } else if (env.BRANCH_NAME == 'stage') {
