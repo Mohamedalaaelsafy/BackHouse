@@ -41,7 +41,7 @@ pipeline {
         stage('Deploy BackHouse') {
             steps {
                 sh 'kubectl apply -f Deployment/service.yaml --validate=false'
-                sh 'kubectl apply -f Deployment/service.yaml --validate=false'
+                sh 'kubectl apply -f Deployment/Deploy.yaml --validate=false'
             }
         
             // post {
