@@ -38,7 +38,7 @@ pipeline {
             }
         }
 
-        stage('Deploy BackHouse') {
+            stage('Push BackHouse') {
             steps {
                 sh 'docker tag back_house:v1 mohamedalaaelsafy/app:v1'
                 sh 'docker push mohamedalaaelsafy/app:v1'
