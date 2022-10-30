@@ -6,10 +6,22 @@ pipeline {
         dockerhub=credentials('Docker_Hub')
     }
     stages {
-        stage('Build BackHouse') {
-            steps {
-               sh "docker login -u $dockerhub_USR -p $dockerhub_PSW"
-               sh "docker build -t back_house:v1 ."
+        stage('Build & Deploy') {
+     steps {
+                script {
+                    if (env.BRANCH_NAME == 'master') {
+                        sh "docker login -u $dockerhub_USR -p $dockerhub_PSW"
+                        sh "docker build -t back_house:v1 ."
+                        sh 'docker build -t .'
+                        sh 'docker tag back_house:v1 mohamedalaaelsafy/app:v1'
+                        sh 'docker push mohamedalaaelsafy/app:v1'
+                } else if (env.BRANCH_NAME == 'stage') {
+                        sh 'kubectl apply -f Deployment/service.yaml --validate=false'
+                        sh 'kubectl apply -f Deployment/Deploy.yaml --validate=false'
+                } else {
+                        sh 'echo Not master nor stage'
+                    }
+                }
             }
             // post {
             //     success {
@@ -21,11 +33,11 @@ pipeline {
             //     }
             // }
         }
-        stage('Push BackHouse') {
-            steps {
-                sh 'docker tag back_house:v1 mohamedalaaelsafy/app:v1'
-                sh 'docker push mohamedalaaelsafy/app:v1'
-            }
+        // stage('Push BackHouse') {
+        //     steps {
+        //         sh 'docker tag back_house:v1 mohamedalaaelsafy/app:v1'
+        //         sh 'docker push mohamedalaaelsafy/app:v1'
+        //     }
         
             // post {
             //     success {
@@ -36,13 +48,13 @@ pipeline {
             //         slackSend (channel: 'jenkins-multibranch', color: '#FF0000', message: "BUILD STAGE FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'[${env.BRANCH_NAME}]")
             //     }
             // }
-        }
+        // }
 
-        stage('Deploy BackHouse') {
-            steps {
-                sh 'kubectl apply -f Deployment/service.yaml --validate=false'
-                sh 'kubectl apply -f Deployment/Deploy.yaml --validate=false'
-            }
+        // stage('Deploy BackHouse') {
+        //     steps {
+        //         sh 'kubectl apply -f Deployment/service.yaml --validate=false'
+        //         sh 'kubectl apply -f Deployment/Deploy.yaml --validate=false'
+        //     }
         
             // post {
             //     success {
@@ -53,7 +65,7 @@ pipeline {
             //         slackSend (channel: 'jenkins-multibranch', color: '#FF0000', message: "BUILD STAGE FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'[${env.BRANCH_NAME}]")
             //     }
             // }
-        }
+        // }
     }
 
     post {
