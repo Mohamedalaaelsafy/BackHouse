@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - image: kareemelkasaby/vfbakehouse:${BUILD_NUMBER}
-        name: mohamedalaaelsafy/app:v1
+        name: bakehouse
         imagePullPolicy: Always
         ports:
         - containerPort: 80
