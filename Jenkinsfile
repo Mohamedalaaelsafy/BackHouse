@@ -15,8 +15,8 @@ pipeline {
                         sh 'docker tag back_house:v1 mohamedalaaelsafy/app:v1'
                         sh 'docker push mohamedalaaelsafy/app:v1'
                 } else if (env.BRANCH_NAME == 'stage') {
-                        sh 'kubectl apply -f Deployment/service.yaml --validate=false'
-                        sh 'kubectl apply -f Deployment/Deploy.yaml --validate=false'
+                        sh 'kubectl apply -f Deployment/service.yaml'
+                        sh 'kubectl apply -f Deployment/Deploy.yaml'
                 } else {
                         sh 'echo Not master nor stage'
                     }
