@@ -8,9 +8,9 @@ metadata:
 spec:
   ports:
   - name: bakehouseport
-    port: 88
+    port: 80
     protocol: TCP
-    targetPort: 88
+    targetPort: 80
     nodePort: 30020
   selector:
     app: bakehouse

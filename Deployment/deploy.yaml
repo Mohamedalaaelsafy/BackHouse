@@ -19,5 +19,5 @@ spec:
         name: blackhouse
         imagePullPolicy: Always
         ports:
-        - containerPort: 88
+        - containerPort: 80
         resources: {}
