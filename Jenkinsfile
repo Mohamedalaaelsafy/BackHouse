@@ -1,7 +1,7 @@
 
 
 pipeline {
-    agent any
+    agent { label 'jenkins-agent' }
     environment {
         dockerhub=credentials('Docker_Hub')
     }
@@ -14,9 +14,11 @@ pipeline {
                         sh "docker build -t back_house:v1 ."
                         sh 'docker tag back_house:v1 mohamedalaaelsafy/app:v1'
                         sh 'docker push mohamedalaaelsafy/app:v1'
-                } else if (env.BRANCH_NAME == 'stage') {
+                } else if (env.BRANCH_NAME == 'stage' || env.BRANCH_NAME == 'dev' || env.BRANCH_NAME == 'test') {
+                withCredentials([file(credentialsId: 'config', variable: 'cfg')]){
                         sh 'kubectl apply -f Deployment/service.yaml'
-                        sh 'kubectl apply -f Deployment/Deploy.yaml'
+                        sh 'kubectl apply -f Deployment/deploy.yaml'
+                 }
                 } else {
                         sh 'echo Not master nor stage'
                     }
