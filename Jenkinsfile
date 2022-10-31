@@ -10,18 +10,29 @@ pipeline {
      steps {
                 script {
                     if (env.BRANCH_NAME == 'master') {
-                        sh "docker login -u $dockerhub_USR -p $dockerhub_PSW"
-                        sh "docker build -t back_house:v1 ."
-                        sh 'docker tag back_house:v1 mohamedalaaelsafy/app:v1'
-                        sh 'docker push mohamedalaaelsafy/app:v1'
+                        sh """
+                        docker login -u $dockerhub_USR -p $dockerhub_PSW
+                        docker build -t mohamedalaaelsafy/app:$BUILD_NUMBER .
+                        docker push mohamedalaaelsafy/app:$BUILD_NUMBER
+                        echo ${BUILD_NUMBER} > ../build
+                        """
                 } else if (env.BRANCH_NAME == 'stage' || env.BRANCH_NAME == 'dev' || env.BRANCH_NAME == 'test') {
                 withCredentials([file(credentialsId: 'config', variable: 'cfg')]){
-                        sh 'kubectl apply -f Deployment/service.yaml'
-                        sh 'kubectl apply -f Deployment/deploy.yaml'
+                        sh """
+                        if [-f build]; then
+                            export BUILD_NUMBER=\$(cat ../build)
+                        else
+                            export BUILD_NUMBER=0
+                        fi
+                        mv Deployment/deploy.yaml Deployment/deploy
+                        cat Deployment/deploy | envsubst > Deployment/deploy.yaml
+                        rm -f Deployment/deploy
+                        kubectl apply --kubeconfig=${cfg} -f Deployment/service.yaml
+                        kubectl apply --kubeconfig=${cfg} -f Deployment/deploy.yaml
+                        """
                  }
-                } else {
-                        sh 'echo Not master nor stage'
-                    }
+                } 
+
                 }
             }
             // post {
