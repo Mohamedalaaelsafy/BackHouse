@@ -19,7 +19,7 @@ pipeline {
                 } else if (env.BRANCH_NAME == 'stage' || env.BRANCH_NAME == 'dev' || env.BRANCH_NAME == 'test') {
                 withCredentials([file(credentialsId: 'config', variable: 'cfg')]){
                         sh """
-                        if [-f build]; then
+                        if [-f ../build]; then
                             export BUILD_NUMBER=\$(cat ../build)
                         else
                             export BUILD_NUMBER=0
